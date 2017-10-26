@@ -1,6 +1,6 @@
 {
     "name": "xsolve-pl/associate",
-    "description": "This library provides new ways of collecting associated objects and loading them efficiently to avoid N+1 query problem.",
+    "description": "This bundle allows to collect objects and values through associations and provides some entity fetching optimizations for Doctrine ORM to address N+1 queries problem.",
     "type": "library",
     "license": "MIT",
     "authors": [
