@@ -13,7 +13,7 @@ Table of contents
 Introduction
 ============
 
-This bundle allows to collect objects and values through associations
+This library allows to collect objects and values through associations
 and provides some entity fetching optimizations for Doctrine ORM to
 address N+1 queries problem.
 
