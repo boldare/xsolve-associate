@@ -133,15 +133,16 @@ class DoctrineOrmEntityLoader
         }
 
         // Or we can have one-to-one association with source being the inverse side.
-        // TODO How this should be handled? Do we have proxies available in this case?
         if (
             $associationMetadataWrapper->isOneToOne()
             && $associationMetadataWrapper->isInverseSide()
         ) {
-            throw new \Exception('Not implemented.');
+            // We don't have to do anything as these objects as automatically loaded by Doctrine.
+
+            return;
         }
 
-        throw new \Exception('Association type not handled.');
+        throw new \Exception('Association not handled.');
     }
 
     /**
