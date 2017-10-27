@@ -23,8 +23,9 @@ This library allows to collect objects and values through associations
 and provides some entity fetching optimizations for Doctrine ORM to
 address N+1 queries problem.
 
-It can play nicely with `Deferred` implementation from `webonyx/graphql-php`
-allowing to significantly reduce number of database queries.
+It can play especially nicely with `Deferred` implementation
+from `webonyx/graphql-php` allowing to significantly reduce number
+of database queries.
 
 License
 =======
@@ -61,9 +62,9 @@ $facade = new \Xsolve\Associate\Facade($entityManager);
 $doctrineOrmCollector = $facade->getDoctrineOrmCollector();
 ```
 
-You are also free to compose your own collectors using building blocks provided
-by this library, as well as replacing the facade with some DI container
-configuration suitable for you framework of choice.
+You can also compose your own collectors using building blocks provided
+by this library. It's also possible to replace the facade provided
+and replace it with some configuration for DI container your framework uses.
 
 That's all - now you're ready to go!
 
@@ -73,7 +74,7 @@ Usage examples
 Collecting associated objects and values
 ----------------------------------------
 
-First functionality provided with this bundle allows to retrieve all objects
+First functionality provided by this library it to allow to retrieve all objects
 that can be reached via specified associations starting from some base objects.
 
 Let's assume we have following classes defined:
@@ -184,9 +185,8 @@ $foos = [
 ];
 ```
 
-
-We would like to collect all `Bar` instances that they are associated with.
-It is as easy as writing:
+Now we'd like to collect all `Bar` instances that `$foos` are associated with.
+It's as easy as this:
 
 ```php
 <?php
@@ -195,11 +195,11 @@ $bars = $basicCollector->collect($foos, ['bar']);
 ```
 
 **Important!** Note that the order of `$bars` is not guaranteed.
-It is so because internally instance of `\SplObjectStorage` is used
-to assert the uniqueness of collected objects.
+It's so because `\SplObjectStorage` is used internally to assert the uniqueness
+of collected objects.
 
 We can go further with that and collect objects that are two associations
-away by doing:
+away from `$foos` by doing:
 
 ```php
 <?php
@@ -210,7 +210,7 @@ $bazs = $basicCollector->collector($foos, ['bar', 'bazs']);
 Note that only one reference `$baz1` will be included as it will be detected
 that the same object was associated view `$bar1` and `$bar2`.
 
-It is also possible to collect scalar values, but in this case uniqueness will not
+It is also possible to collect scalar values but in this case uniqueness will not
 be imposed on them:
 
 ```php
@@ -221,19 +221,22 @@ $texts = $basicCollector->collector($foos, ['bar', 'bazs', 'text']);
 
 If given association yields an array with sequential numeric indices
 starting with `0` it is automatically assumed that it is a collection
-of objects or values (i.e. that association links given object to many
-objects). Therefore it is possible to write:
+of objects or scalars (i.e. that association links given object to many
+objects or scalars). Therefore it's possible to write:
 
 ```php
 <?php
 $words = $basicCollector->collector($foos, ['bar', 'bazs', 'words']);
-// $words ~= ['lorem', 'ipsum','dolor', 'sit', 'amet', 'malef', 'dolor', 'sit']; - order is not guaranteed.
+// $words ~= [
+//     'lorem', 'ipsum','dolor', 'sit',
+//     'amet', 'malef', 'dolor', 'sit',
+// ]; - order is not guaranteed.
 ```
 
-This time `dolor` is present twice as it is a scalar value and uniqueness was not imposed.
+This time `dolor` is present twice as it is a scalar value and uniqueness
+was not imposed.
 
-However if an array is associative we can also go deeper into it
-when collecting values:
+However if an array is associative we can go even deeper when collecting values:
 
 ```php
 <?php
@@ -242,14 +245,107 @@ $wordCounts = $basicCollector->collector($foos, ['bar', 'bazs', 'textStats', 'wo
 ```
 
 Internally [`symfony/property-access`](https://packagist.org/packages/symfony/property-access)
-is used to follow associations so they may be accessible in different ways. Please consult
+is used to follow associations so they may be accessible in different ways -
+for instance as a public property or via a getter method.
+Please consult
 [its documentation](https://symfony.com/doc/current/components/property_access.html)
 for possible options.
 
 Efficiently load associated entities and solve N+1 queries problem
 ------------------------------------------------------------------
 
-TODO
+Let's assume that we're building an e-commerce website using
+[doctrine/orm](https://packagist.org/packages/doctrine/orm)
+for persistence. One of the things we can run into is N+1 queries problem
+which occurs when we fetch some entities from database and then attempt
+to traverse their associations via getters.
+
+For example we can have some products. Each of them has some variants which in turn
+have a property storing available inventory quantity. Now we would like to find out
+which products are available for sale and we already have `Product` instances loaded
+from database (e.g. after taking into account some filters that user applied).
+We could use code like this:
+
+```php
+<?php
+$availableProducts = array_filter(
+    $products,
+    function(Product $product) {
+        foreach ($product->getVariants() as $variant) {
+            if ($variant->getInventoryQuantity() > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+);
+```
+
+While this will work perfectly fine it will incur one `SELECT` query each time we call
+`getVariants` method on given `Variant` instance for the first time. Hence if we want
+to check availability for 100 products we would end up with 101 database queries executed.
+
+You can find out more about this problem
+at [5 Doctrine ORM Performance Traps You Should Avoid](https://tideways.io/profiler/blog/5-doctrine-orm-performance-traps-you-should-avoid)
+written by [Benjamin Eberlei](https://github.com/beberlei) -
+see section titled in section *Lazy-Loading and N+1 Queries*.
+Four ways to address this problem are pointed out there.
+
+Eager loading (solution 3) can be the simplest way to go in some cases
+but in many cases we will find it too rigid. It is possible that we don't want specific
+association to be loaded always but just in some cases.
+
+Other solutions are more flexible, like using dedicated DQL query (solution 1)
+or triggering eager loading of entities after collecting their identifiers (solution 2).
+
+These solutions would however result in clunky code and they have to be adjusted
+depending on whether given association is of *-to-one* or *-to-many* type
+and whether entities that are already initialized are on the inverse or the owning
+side of the association. Also some minor optimizations can be applied
+if some `\Doctrine\Common\Persistence\Proxy` instances
+or `\Doctrine\ORM\PersistentCollection` instances are already initialized
+and hence can be skipped.
+
+This library tries to do exactly what is proposed in solutions 1 and 2
+but in a clean and encapsulated manner. Thanks to it loading associated entities
+is simple and can be applied easily. In the example above it would be only required
+to precede previously given code with:
+
+```php
+<?php
+$facade = new \Xsolve\Associate\Facade($entityManager);
+$doctrineOrmCollector = $facade->getDoctrineOrmCollector();
+$doctrineOrmCollector->collect($products, ['variants']);
+```
+
+After executing this snippet all variants for given products will be loaded
+with a single `SELECT` query and calling `getVariants` will not result
+in any additional queries.
+
+If the number of products or associated entities is high they'll be split
+in chunks and associations for each chunk will be loaded separately. Chunk size is
+set by default to `1000` but you are free to alter it
+or set it to `null` to disable chunking.
+
+Also property values can be collected this way. If each variant has a property containing
+its price and we would like to collect prices of all variants of all given products
+we could execute following code:
+
+```php
+<?php
+$facade = new \Xsolve\Associate\Facade($entityManager);
+$doctrineOrmCollector = $facade->getDoctrineOrmCollector();
+$prices = $doctrineOrmCollector->collect($products, ['variants', 'price']);
+```
+
+It's as simple as that!
+
+**Important!** You won't be able to reduce the number of queries for one-to-one
+associations starting from inverse side - Doctrine ORM loads them by default issuing
+a separate `SELECT` for each entity. You may consider changing such association to
+one-to-many (and use collector afterwards) or using embeddable if possible (in which case
+embedded entities will be loaded with the same query that loads entities that contain them).
 
 Defer loading entities to load them in bulk
 -------------------------------------------
@@ -271,12 +367,9 @@ $resolve = function(Product $product) {
 };
 ```
 
-While this will work just fine, it will issue a separate `SELECT` query for each instance
-of `Product` class (unless this association has fetch mode set to `EAGER`).
-Hence if we want to list 100 products, we would end up with 101 database queries.
-
-To alleviate this problem and to load these objects efficiently we can use instance of `BufferedCollector`
-like this:
+But using this approach we would again end up with N+1 queries executed against our database.
+To alleviate this problem and to load these objects efficiently we can use instance of
+`BufferedCollector` like this:
 
 ```php
 <?php
@@ -292,9 +385,10 @@ $resolve = function(Product $product) use ($bufferedCollector) {
 };
 ```
 
-Et voilà - it is that simple! What `BufferedCollector` will do it will accumulate
-all collect parameters it is provided with. When GraphQL library attempts to resolve
-`Deferred` that was returned in our `resolve` function the collector will group all stored
-parameters by same base object class and association path and will load all of them in
-a single batch, issuing only 1 `SELECT` query. Hence we will end up with 2 queries
-instead of 101.
+Et voilà! What `BufferedCollector` will do it will accumulate all collect jobs
+while query result is build width first. When GraphQL library attempts to resolve
+`Deferred` that was returned in our `resolve` function the collector will group all similar
+jobs stored before (comparing base object class and association path) and will load
+all of them in a single batch, issuing only 1 `SELECT` query
+(or 1 query for chunk if the number of base entities is high as mentioned above).
+Hence we will end up with 2 queries instead of 101.
