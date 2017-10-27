@@ -161,8 +161,8 @@ class Baz
 }
 ```
 
-Now let's assume we have some instances of `Foo` class in `$foos` array and some
-associated objects:
+Now let's assume we have some instances of `Foo` class in `$foos` array
+as well as some associated objects:
 
 ```php
 <?php
@@ -206,8 +206,8 @@ $bazs = $basicCollector->collector($foos, ['bar', 'bazs']);
 // $bazs ~= [$baz1, $baz2, $baz3, $baz4]; - order is not guaranteed.
 ```
 
-Note that only one reference `$baz1` will be included as it will be detected that same
-object was associated view `$bar1` and `$bar2`.
+Note that only one reference `$baz1` will be included as it will be detected
+that the same object was associated view `$bar1` and `$bar2`.
 
 It is also possible to collect scalar values, but in this case uniqueness will not
 be imposed on them:
@@ -231,7 +231,8 @@ $words = $basicCollector->collector($foos, ['bar', 'bazs', 'words']);
 
 This time `dolor` is present twice as it is a scalar value and uniqueness was not imposed.
 
-However if array is associative we can also go deeper into it when collecting values:
+However if an array is associative we can also go deeper into it
+when collecting values:
 
 ```php
 <?php
@@ -249,11 +250,50 @@ Efficiently load associated entities and solve N+1 queries problem
 
 TODO
 
-Point 5 named *Lazy-Loading and N+1 Queries*
-in [5 Doctrine ORM Performance Traps You Should Avoid](https://tideways.io/profiler/blog/5-doctrine-orm-performance-traps-you-should-avoid)
-by [Benjamin Eberlei](https://github.com/beberlei)
-
 Defer loading entities to load them in bulk
 -------------------------------------------
 
-TODO
+If you're working on a project using Doctrine ORM and providing GraphQL API
+then this library can play nicely with `Deferred` class provided by
+[webonyx/graphql-php](https://packagist.org/packages/webonyx/graphql-php).
+You can read more about the general idea behind this approach at
+[Solving N+1 Problem](http://webonyx.github.io/graphql-php/data-fetching/#solving-n1-problem)
+section of its documentation.
+
+Let's assume we need to implement `resolve` function that will return `Variant` instances for
+`Product` instance. Basic implementation could look as follows:
+
+```php
+<?php
+$resolve = function(Product $product) {
+    return $product->getVariants();
+};
+```
+
+While this will work just fine, it will issue a separate `SELECT` query for each instance
+of `Product` class (unless this association has fetch mode set to `EAGER`).
+Hence if we want to list 100 products, we would end up with 101 database queries.
+
+To alleviate this problem and to load these objects efficiently we can use instance of `BufferedCollector`
+like this:
+
+```php
+<?php
+$facade = new \Xsolve\Associate\Facade($entityManager);
+$bufferedCollector = $facade->getBufferedCollector();
+
+$resolve = function(Product $product) use ($bufferedCollector) {
+    $bufferedCollectClosure = $bufferedCollector->createCollectClosure([$product], ['variants']);
+
+    return new \GraphQL\Deferred(function() use ($bufferedCollectClosure) {
+        return $bufferedCollectClosure();
+    });
+};
+```
+
+Et voilà - it is that simple! What `BufferedCollector` will do it will accumulate
+all collect parameters it is provided with. When GraphQL library attempts to resolve
+`Deferred` that was returned in our `resolve` function the collector will group all stored
+parameters by same base object class and association path and will load all of them in
+a single batch, issuing only 1 `SELECT` query. Hence we will end up with 2 queries
+instead of 101.
