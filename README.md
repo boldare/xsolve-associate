@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/xsolve-pl/xsolve-associate.svg?branch=master)](https://travis-ci.org/xsolve-pl/xsolve-associate)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/xsolve-pl/xsolve-associate/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/xsolve-pl/xsolve-associate/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/xsolve-pl/associate/v/stable)](https://packagist.org/packages/xsolve-pl/associate)
 [![Total Downloads](https://poser.pugx.org/xsolve-pl/associate/downloads)](https://packagist.org/packages/xsolve-pl/associate)
