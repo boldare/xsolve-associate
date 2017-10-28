@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Xsolve\Associate\AssociationCollecting\BasicAssociationCollectingStrategy;
 use Xsolve\Associate\AssociationCollecting\DoctrineOrmAssociationCollectingStrategy;
 use Xsolve\Associate\BufferedCollector\BufferedCollector;
+use Xsolve\Associate\BufferedCollector\BufferedCollectorInterface;
 use Xsolve\Associate\CollectionTraversal\ArrayCollectionTraversalStrategy;
 use Xsolve\Associate\CollectionTraversal\DoctrineOrmCollectionCollectionTraversalStrategy;
 use Xsolve\Associate\CollectionTraversal\TraversableCollectionTraversalStrategy;
@@ -94,9 +95,9 @@ class Facade
     }
 
     /**
-     * @return BufferedCollector
+     * @return BufferedCollectorInterface
      */
-    public function getBufferedCollector(): BufferedCollector
+    public function getBufferedDoctrineOrmCollector(): BufferedCollectorInterface
     {
         if (!$this->bufferedCollector instanceof BufferedCollector) {
             $this->bufferedCollector = new BufferedCollector(

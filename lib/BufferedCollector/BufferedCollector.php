@@ -6,7 +6,7 @@ use Xsolve\Associate\CollectorInterface;
 use Xsolve\Associate\Metadata\MetadataWrapperProvider;
 use Xsolve\Associate\ObjectCollection\UniqueObjectCollection;
 
-class BufferedCollector
+class BufferedCollector implements BufferedCollectorInterface
 {
     /**
      * @var MetadataWrapperProvider

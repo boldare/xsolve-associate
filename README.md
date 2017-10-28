@@ -367,7 +367,7 @@ To alleviate this problem and to load these objects efficiently we can use insta
 ```php
 <?php
 $facade = new \Xsolve\Associate\Facade($entityManager);
-$bufferedCollector = $facade->getBufferedCollector();
+$bufferedCollector = $facade->getBufferedDoctrineOrmCollector();
 
 $resolve = function(Product $product) use ($bufferedCollector) {
     $bufferedCollectClosure = $bufferedCollector->createCollectClosure([$product], ['variants']);
