@@ -85,22 +85,22 @@ Let's assume we have following classes defined:
 class Foo
 {
     /**
-     * @var Bar
+     * @var Bar|null
      */
     protected $bar;
 
     /**
      * @param Bar $bar
      */
-    public function __construct(Bar $bar)
+    public function __construct(Bar $bar = null)
     {
-        $this->bar = bar;
+        $this->bar = $bar;
     }
 
     /**
-     * @return Bar
+     * @return Bar|null
      */
-    public function getBar(): Bar
+    public function getBar()
     {
         return $this->bar;
     }
@@ -118,7 +118,7 @@ class Bar
      */
     public function __construct(array $bazs)
     {
-        $this->bazs = bazs;
+        $this->bazs = $bazs;
     }
 }
 
@@ -152,14 +152,6 @@ class Baz
     {
         return explode(' ', $this->text);
     }
-
-    /**
-     * @return array
-     */
-    public function getTextStats(): array
-    {
-        return ['wordCount' => count($this->getWords())];
-    }
 }
 ```
 
@@ -182,6 +174,7 @@ $foos = [
             $baz4 = new Baz('dolor sit'),
         ])
     ),
+    $foo3 = new Foo(),
 ];
 ```
 
@@ -233,14 +226,14 @@ $words = $basicCollector->collector($foos, ['bar', 'bazs', 'words']);
 // ]; - order is not guaranteed.
 ```
 
-This time `dolor` is present twice as it is a scalar value and uniqueness
-was not imposed.
+This time `dolor` and `sit` are present twice as they are scalar values
+and uniqueness was not imposed.
 
 However if an array is associative we can go even deeper when collecting values:
 
 ```php
 <?php
-$wordCounts = $basicCollector->collector($foos, ['bar', 'bazs', 'textStats', 'wordCount']);
+$wordCounts = $basicCollector->collect($foos, ['bar', 'bazs', 'textStats', '[wordCount]']);
 // $wordCounts ~= [2, 1, 3, 2]; - order is not guaranteed.
 ```
 
