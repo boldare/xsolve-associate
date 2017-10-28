@@ -152,6 +152,14 @@ class Baz
     {
         return explode(' ', $this->text);
     }
+
+    /**
+     * @return array
+     */
+    public function getTextStats(): array
+    {
+        return ['wordCount' => count($this->getWords())];
+    }
 }
 ```
 

@@ -8,5 +8,6 @@ return Config::create()
         '@Symfony' => true,
         'concat_space' => ['spacing' => 'one'],
     ])
-    ->setFinder(Finder::create()->in('lib/'));
-
+    ->setFinder(
+        Finder::create()->in('lib/')->in('tests/')
+    );

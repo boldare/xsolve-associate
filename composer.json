@@ -26,6 +26,6 @@
         "psr-4": { "Xsolve\\Associate\\": "lib" }
     },
     "autoload-dev": {
-        "psr-4": { "Xsolve\\AssociateTest\\": "tests" }
+        "psr-4": { "Xsolve\\AssociateTests\\": "tests" }
     }
 }

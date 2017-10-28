@@ -44,10 +44,10 @@ class BasicAssociationCollectingStrategy implements AssociationCollectingStrateg
         $collectedAssociatedObjects = new UniqueObjectCollection();
 
         foreach ($objects as $object) {
-            $this->addAssociatedObjectsToCollection(
-                $collectedAssociatedObjects,
-                $this->propertyAccessor->getValue($object, $associationName)
-            );
+            $associatedObject = $this->propertyAccessor->getValue($object, $associationName);
+            if (!is_null($associatedObject)) {
+                $this->addAssociatedObjectsToCollection($collectedAssociatedObjects, $associatedObject);
+            }
         }
 
         return $collectedAssociatedObjects->getAll();
