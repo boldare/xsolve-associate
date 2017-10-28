@@ -13,8 +13,8 @@ Table of contents
   * [Getting started](#getting-started)
   * [Usage examples](#usage-examples)
     * [Collecting associated objects and values](#collecting-associated-objects-and-values)
-    * [Efficiently load associated entities and solve N+1 queries problem](#efficiently-load-associated-entities-and-solve-N+1-queries-problem)
-    * [Defer loading entities to load them in bulk](#defer-loading-entities-to-load-them-in-bulk)
+    * [Efficiently loading associated entities and solving N+1 queries problem](#efficiently-loading-associated-entities-and-solving-N+1-queries-problem)
+    * [Deferring association traversal to load entities in bulk](#deferring-association-traversal-to-load-entities-in-bulk)
 
 Introduction
 ============
@@ -244,8 +244,8 @@ Please consult
 [its documentation](https://symfony.com/doc/current/components/property_access.html)
 for possible options.
 
-Efficiently load associated entities and solve N+1 queries problem
-------------------------------------------------------------------
+Efficiently loading associated entities and solving N+1 queries problem
+-----------------------------------------------------------------------
 
 Let's assume that we're building an e-commerce website using
 [doctrine/orm](https://packagist.org/packages/doctrine/orm)
@@ -340,8 +340,8 @@ a separate `SELECT` for each entity. You may consider changing such association 
 one-to-many (and use collector afterwards) or using embeddable if possible (in which case
 embedded entities will be loaded with the same query that loads entities that contain them).
 
-Defer loading entities to load them in bulk
--------------------------------------------
+Deferring association traversal to load entities in bulk
+--------------------------------------------------------
 
 If you're working on a project using Doctrine ORM and providing GraphQL API
 then this library can play nicely with `Deferred` class provided by
