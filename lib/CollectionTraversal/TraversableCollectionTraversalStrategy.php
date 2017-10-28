@@ -19,7 +19,7 @@ class TraversableCollectionTraversalStrategy implements CollectionTraversalStrat
      */
     public function traverse(ObjectCollectionInterface $objectCollection, $propertyValue)
     {
-        /* @var array $propertyValue */
+        /* @var \Traversable $propertyValue */
         $objectCollection->addMany(iterator_to_array($propertyValue));
     }
 }

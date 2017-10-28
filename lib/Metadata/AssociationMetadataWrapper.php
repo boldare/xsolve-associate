@@ -94,10 +94,17 @@ class AssociationMetadataWrapper
 
     /**
      * @return ClassMetadataWrapper
+     *
+     * @throws \Exception
      */
     public function getSourceClassMetadataWrapper(): ClassMetadataWrapper
     {
-        return $this->metadataWrapperProvider->getClassMetadataWrapperByClassName($this->getSourceClassName());
+        $sourceClassName = $this->metadataWrapperProvider->getClassMetadataWrapperByClassName($this->getSourceClassName());
+        if (!$sourceClassName instanceof ClassMetadataWrapper) {
+            throw new \Exception('Source class name not determined.');
+        }
+
+        return $sourceClassName;
     }
 
     /**
@@ -110,9 +117,16 @@ class AssociationMetadataWrapper
 
     /**
      * @return ClassMetadataWrapper
+     *
+     * @throws \Exception
      */
     public function getTargetClassMetadataWrapper(): ClassMetadataWrapper
     {
-        return $this->metadataWrapperProvider->getClassMetadataWrapperByClassName($this->getTargetClassName());
+        $targetClassName = $this->metadataWrapperProvider->getClassMetadataWrapperByClassName($this->getTargetClassName());
+        if (!$targetClassName instanceof ClassMetadataWrapper) {
+            throw new \Exception('Target class name not determined.');
+        }
+
+        return $targetClassName;
     }
 }

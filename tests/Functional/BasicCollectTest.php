@@ -105,7 +105,7 @@ class BasicCollectTest extends TestCase
      */
     protected function assertArraysAreSimilar(array $expected, array $actual, string $message = '')
     {
-        return $this->assertTrue(
+        $this->assertTrue(
             $this->areArraysSimilar($expected, $actual),
             $message
         );

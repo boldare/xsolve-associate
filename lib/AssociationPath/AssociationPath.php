@@ -67,17 +67,11 @@ class AssociationPath
      */
     public function isPartiallyEqual(self $anotherAssociationPath): bool
     {
-        $i = 0;
-        $iMax = min($this->getDepth(), $anotherAssociationPath->getDepth());
-        while ($i < $iMax) {
-            if ($this->associationNames[$i] !== $anotherAssociationPath->associationNames[$i]) {
-                return false;
-            }
+        $minDepth = min($this->getDepth(), $anotherAssociationPath->getDepth());
 
-            $i += 1;
-        }
-
-        return true;
+        return
+            array_slice($this->associationNames, 0, $minDepth)
+            === array_slice($anotherAssociationPath->associationNames, 0, $minDepth);
     }
 
     /**
@@ -87,21 +81,7 @@ class AssociationPath
      */
     public function isEqual(self $anotherAssociationPath): bool
     {
-        if ($this->getDepth() !== $anotherAssociationPath->getDepth()) {
-            return false;
-        }
-
-        $i = 0;
-        $iMax = $this->getDepth();
-        while ($i < $iMax) {
-            if ($this->associationNames[$i] !== $anotherAssociationPath->associationNames[$i]) {
-                return false;
-            }
-
-            $i += 1;
-        }
-
-        return true;
+        return $this->associationNames === $anotherAssociationPath->associationNames;
     }
 
     /**
