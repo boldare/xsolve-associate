@@ -82,67 +82,67 @@ Let's assume we have following classes defined:
 ```php
 <?php
 
-class Foo
+class Car
 {
     /**
-     * @var Bar|null
+     * @var Engine|null
      */
-    protected $bar;
+    protected $engine;
 
     /**
-     * @param Bar $bar
+     * @param Engine $engine
      */
-    public function __construct(Bar $bar = null)
+    public function __construct(Engine $engine = null)
     {
-        $this->bar = $bar;
+        $this->engine = $engine;
     }
 
     /**
-     * @return Bar|null
+     * @return Engine|null
      */
-    public function getBar()
+    public function getEngine()
     {
-        return $this->bar;
+        return $this->engine;
     }
 }
 
-class Bar
+class Engine
 {
     /**
-     * @var Baz[]
+     * @var Part[]
      */
-    public $bazs;
+    public $parts;
 
     /**
-     * @param Baz[] $bazs
+     * @param Part[] $parts
      */
-    public function __construct(array $bazs)
+    public function __construct(array $parts)
     {
-        $this->bazs = $bazs;
+        $this->parts = $parts;
     }
 }
 
-class Baz
+class Part
 {
     /**
      * @var string
      */
-    protected $text;
+    protected $name;
 
     /**
-     * @param string $text
+     * @param string $name
      */
-    public function __construct(string $text)
+    public function __construct(string $name)
     {
-        $this->text = $text;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getText(): string
+    public function getName(): string
     {
-        return $this->text;
+        return $this->name;
     }
 
     /**
@@ -150,7 +150,7 @@ class Baz
      */
     public function getWords(): array
     {
-        return explode(' ', $this->text);
+        return explode(' ', $this->name);
     }
 
     /**
@@ -163,61 +163,61 @@ class Baz
 }
 ```
 
-Now let's assume we have some instances of `Foo` class in `$foos` array
+Now let's assume we have some instances of `Car` class in `$cars` array
 as well as some associated objects:
 
 ```php
 <?php
-$foos = [
-    $foo1 = new Foo(
-        $bar1 = new Bar([
-            $baz1 = new Baz('lorem ipsum'),
-            $baz2 = new Baz('dolor'),
+$cars = [
+    $sportCar = new Car(
+        $fastEngine = new Engine([
+            $valve = new Part('valve'),
+            $cylinder= new Part('cylinder'),
         ])
     ),
-    $foo2 = new Foo(
-        $bar2 = new Bar([
-            $baz1,
-            $baz3 = new Baz('sit amet malef'),
-            $baz4 = new Baz('dolor sit'),
+    $sedan = new Car(
+        $turboEngine = new Engine([
+            $valve,
+            $sparkPlug = new Part('nano spark plug'),
+            $smartCylinder = new Part('smart cylinder'),
         ])
     ),
-    $foo3 = new Foo(),
+    $suv = new Car(),
 ];
 ```
 
-Now we'd like to collect all `Bar` instances that `$foos` are associated with.
+Now we'd like to collect all `Engine` instances that `$cars` are associated with.
 It's as easy as this:
 
 ```php
 <?php
-$bars = $basicCollector->collect($foos, ['bar']);
-// $bars ~= [$bar1, $bar2]; - order is not guaranteed.
+$engines = $basicCollector->collect($cars, ['engine']);
+// $engines ~= [$fastEngine, $turboEngine]; - order is not guaranteed.
 ```
 
-**Important!** Note that the order of `$bars` is not guaranteed.
+**Important!** Note that the order of `$engines` is not guaranteed.
 It's so because `\SplObjectStorage` is used internally to assert the uniqueness
 of collected objects.
 
 We can go further with that and collect objects that are two associations
-away from `$foos` by doing:
+away from `$cars` by doing:
 
 ```php
 <?php
-$bazs = $basicCollector->collector($foos, ['bar', 'bazs']);
-// $bazs ~= [$baz1, $baz2, $baz3, $baz4]; - order is not guaranteed.
+$parts = $basicCollector->collect($cars, ['engine', 'parts']);
+// $parts ~= [$valve, $cylinder, $sparkPlug, $smartCylinder]; - order is not guaranteed.
 ```
 
-Note that only one reference `$baz1` will be included as it will be detected
-that the same object was associated view `$bar1` and `$bar2`.
+Note that only one reference `$valve` will be included as it will be detected
+that the same object was associated view `$fastEngine` and `$turboEngine`.
 
 It is also possible to collect scalar values but in this case uniqueness will not
 be imposed on them:
 
 ```php
 <?php
-$texts = $basicCollector->collector($foos, ['bar', 'bazs', 'text']);
-// $texts ~= ['lorem ipsum', 'dolor', 'sit amet malef', 'dolor sit']; - order is not guaranteed.
+$texts = $basicCollector->collect($cars, ['engine', 'parts', 'text']);
+// $texts ~= ['valve', 'cylinder', 'spark plug', 'smart cylinder']; - order is not guaranteed.
 ```
 
 If given association yields an array with sequential numeric indices
@@ -227,22 +227,21 @@ objects or scalars). Therefore it's possible to write:
 
 ```php
 <?php
-$words = $basicCollector->collector($foos, ['bar', 'bazs', 'words']);
+$words = $basicCollector->collect($cars, ['engine', 'parts', 'words']);
 // $words ~= [
-//     'lorem', 'ipsum','dolor', 'sit',
-//     'amet', 'malef', 'dolor', 'sit',
+//     'valve', 'cylinder', 'nano', 'spark', 'plug', 'smart', 'cylinder'
 // ]; - order is not guaranteed.
 ```
 
-This time `dolor` and `sit` are present twice as they are scalar values
+This time and `cylinder` is present twice as it is scalar value
 and uniqueness was not imposed.
 
 However if an array is associative we can go even deeper when collecting values:
 
 ```php
 <?php
-$wordCounts = $basicCollector->collect($foos, ['bar', 'bazs', 'textStats', '[wordCount]']);
-// $wordCounts ~= [2, 1, 3, 2]; - order is not guaranteed.
+$wordCounts = $basicCollector->collect($cars, ['engine', 'parts', 'textStats', '[wordCount]']);
+// $wordCounts ~= [1, 1, 3, 2]; - order is not guaranteed.
 ```
 
 Internally [`symfony/property-access`](https://packagist.org/packages/symfony/property-access)
