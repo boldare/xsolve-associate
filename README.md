@@ -195,9 +195,11 @@ $bars = $basicCollector->collect($foos, ['bar']);
 // $bars ~= [$bar1, $bar2]; - order is not guaranteed.
 ```
 
-**Important!** Note that the order of `$bars` is not guaranteed.
-It's so because `\SplObjectStorage` is used internally to assert the uniqueness
-of collected objects.
+**Important!**
+
+`\SplObjectStorage` is used internally, which cause that:
+- Only unique objects are returned. (Notice that `$baz1` appear only once in result),
+- Order of `$bars` is not guaranteed.
 
 We can go further with that and collect objects that are two associations
 away from `$foos` by doing:
