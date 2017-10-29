@@ -148,7 +148,7 @@ class Part
     /**
      * @return string[]
      */
-    public function getWords(): array
+    public function getNameAsWords(): array
     {
         return explode(' ', $this->name);
     }
@@ -156,9 +156,9 @@ class Part
     /**
      * @return array
      */
-    public function getTextStats(): array
+    public function getNameStats(): array
     {
-        return ['wordCount' => count($this->getWords())];
+        return ['wordCount' => count($this->getNameAsWords())];
     }
 }
 ```
@@ -208,7 +208,7 @@ $parts = $basicCollector->collect($cars, ['engine', 'parts']);
 // $parts ~= [$valve, $cylinder, $sparkPlug, $smartCylinder]; - order is not guaranteed.
 ```
 
-Note that only one reference `$valve` will be included as it will be detected
+Note that only `$valve` will be included only once as it will be detected
 that the same object was associated view `$fastEngine` and `$turboEngine`.
 
 It is also possible to collect scalar values but in this case uniqueness will not
@@ -216,8 +216,8 @@ be imposed on them:
 
 ```php
 <?php
-$texts = $basicCollector->collect($cars, ['engine', 'parts', 'text']);
-// $texts ~= ['valve', 'cylinder', 'spark plug', 'smart cylinder']; - order is not guaranteed.
+$names = $basicCollector->collect($cars, ['engine', 'parts', 'name']);
+// $names ~= ['valve', 'cylinder', 'spark plug', 'smart cylinder']; - order is not guaranteed.
 ```
 
 If given association yields an array with sequential numeric indices
@@ -227,7 +227,7 @@ objects or scalars). Therefore it's possible to write:
 
 ```php
 <?php
-$words = $basicCollector->collect($cars, ['engine', 'parts', 'words']);
+$words = $basicCollector->collect($cars, ['engine', 'parts', 'nameAsWords']);
 // $words ~= [
 //     'valve', 'cylinder', 'nano', 'spark', 'plug', 'smart', 'cylinder'
 // ]; - order is not guaranteed.
@@ -240,7 +240,7 @@ However if an array is associative we can go even deeper when collecting values:
 
 ```php
 <?php
-$wordCounts = $basicCollector->collect($cars, ['engine', 'parts', 'textStats', '[wordCount]']);
+$wordCounts = $basicCollector->collect($cars, ['engine', 'parts', 'nameStats', '[wordCount]']);
 // $wordCounts ~= [1, 1, 3, 2]; - order is not guaranteed.
 ```
 
