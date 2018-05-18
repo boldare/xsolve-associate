@@ -3,6 +3,7 @@
 namespace Xsolve\Associate\Metadata;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 class MetadataWrapperProvider
@@ -13,7 +14,7 @@ class MetadataWrapperProvider
     protected $entityManager;
 
     /**
-     * @var ClassMetadataWrapper[]
+     * @var (ClassMetadataWrapper|null)[]
      */
     protected $classMetadataWrappers = [];
 
@@ -44,7 +45,7 @@ class MetadataWrapperProvider
 
         // If metadata were not available for some objects.
         if (in_array(null, $classMetadataWrappers, true)) {
-            return;
+            return null;
         }
 
         $classNames = array_unique(array_map(
@@ -76,6 +77,8 @@ class MetadataWrapperProvider
      * @param string $className
      *
      * @return ClassMetadataWrapper|null
+     *
+     * @throws \Exception
      */
     public function getClassMetadataWrapperByClassName(string $className)
     {
@@ -83,11 +86,11 @@ class MetadataWrapperProvider
             $classMetadata = $this->entityManager->getClassMetadata($className);
 
             if ($classMetadata instanceof ClassMetadata) {
-                $this->classMetadataWrappers[$className] = new ClassMetadataWrapper(
-                    $this,
-                    $this->entityManager->getRepository($className),
-                    $classMetadata
-                );
+                $entityRepository = $this->entityManager->getRepository($className);
+                if (!$entityRepository instanceof EntityRepository) {
+                    throw new \Exception();
+                }
+                $this->classMetadataWrappers[$className] = new ClassMetadataWrapper($this, $entityRepository, $classMetadata);
             } else {
                 $this->classMetadataWrappers[$className] = null;
             }

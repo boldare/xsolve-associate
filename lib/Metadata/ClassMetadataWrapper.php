@@ -25,7 +25,7 @@ class ClassMetadataWrapper
     protected $classMetadata;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $identifierFieldName;
 
@@ -116,7 +116,7 @@ class ClassMetadataWrapper
                 $associationMapping = $this->classMetadata->getAssociationMapping($associationName);
             } catch (MappingException $e) {
                 if (0 === strpos($e->getMessage(), 'No mapping found for field ')) {
-                    return;
+                    return null;
                 }
                 throw $e;
             }

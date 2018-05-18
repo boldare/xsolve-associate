@@ -7,7 +7,7 @@ use Xsolve\Associate\ObjectCollection\ObjectCollectionInterface;
 interface CollectionTraversalStrategyInterface
 {
     /**
-     * @param $propertyValue
+     * @param mixed $propertyValue
      *
      * @return bool
      */
@@ -15,7 +15,7 @@ interface CollectionTraversalStrategyInterface
 
     /**
      * @param ObjectCollectionInterface $objectCollection
-     * @param $propertyValue
+     * @param mixed $propertyValue
      */
     public function traverse(ObjectCollectionInterface $objectCollection, $propertyValue);
 }

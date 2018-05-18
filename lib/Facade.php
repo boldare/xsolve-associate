@@ -19,7 +19,7 @@ use Xsolve\Associate\Metadata\MetadataWrapperProvider;
 class Facade
 {
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface|null
      */
     protected $entityManager;
 
@@ -111,12 +111,14 @@ class Facade
 
     /**
      * @return MetadataWrapperProvider
+     *
+     * @throws \Exception
      */
     protected function getMetadataWrapperProvider(): MetadataWrapperProvider
     {
-        $this->assertEntityManagerAvailable();
+        $entityManager = $this->getEntityManager();
         if (!$this->metadataWrapperProvider instanceof MetadataWrapperProvider) {
-            $this->metadataWrapperProvider = new MetadataWrapperProvider($this->entityManager);
+            $this->metadataWrapperProvider = new MetadataWrapperProvider($entityManager);
         }
 
         return $this->metadataWrapperProvider;
@@ -189,5 +191,19 @@ class Facade
         if (!$this->entityManager instanceof EntityManagerInterface) {
             throw new \Exception('Entity manager not available.');
         }
+    }
+
+    /**
+     * @return EntityManagerInterface
+     *
+     * @throws \Exception
+     */
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        if (!$this->entityManager instanceof EntityManagerInterface) {
+            throw new \Exception('Entity manager not available.');
+        }
+
+        return $this->entityManager;
     }
 }
