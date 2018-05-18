@@ -17,13 +17,13 @@ class BufferedCollect
     protected $associationPath;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $associatedEntities;
 
     /**
      * @param array     $objects
-     * @param \string[] $associationNames
+     * @param string[]  $associationNames
      */
     public function __construct(
         array $objects,
