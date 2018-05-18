@@ -12,6 +12,7 @@
             <directory>./</directory>
             <exclude>
                 <directory>./tests</directory>
+                <directory>./legacyTests</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>
