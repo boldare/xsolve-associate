@@ -97,7 +97,7 @@ class AssociationPathsCollection
                 $uniqueAssociationPaths[] = $associationPaths[$i];
             }
 
-            $i += 1;
+            ++$i;
         }
 
         return $uniqueAssociationPaths;
