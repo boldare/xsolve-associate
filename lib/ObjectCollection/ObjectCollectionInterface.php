@@ -5,9 +5,7 @@ namespace Xsolve\Associate\ObjectCollection;
 interface ObjectCollectionInterface
 {
     /**
-     * @param $object
-     *
-     * @return mixed
+     * @param mixed $object
      */
     public function addOne($object);
 

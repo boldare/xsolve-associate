@@ -33,7 +33,7 @@ class DoctrineOrmEntityLoader
     protected $nonProxiedAssociationQueryExecutor;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $chunkSize = 1000;
 
@@ -132,12 +132,13 @@ class DoctrineOrmEntityLoader
             return;
         }
 
-        // Or we can have one-to-one association with source being the inverse side.
+        // Or we have one-to-one association with source being the inverse side.
         if (
             $associationMetadataWrapper->isOneToOne()
             && $associationMetadataWrapper->isInverseSide()
         ) {
-            // We don't have to do anything as these objects as automatically loaded by Doctrine.
+            // We don't have to do anything as these objects are automatically loaded by Doctrine with separate queries
+            // and there's no way to optimize this.
 
             return;
         }
