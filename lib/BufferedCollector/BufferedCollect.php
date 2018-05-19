@@ -22,8 +22,8 @@ class BufferedCollect
     protected $associatedEntities;
 
     /**
-     * @param array     $objects
-     * @param string[]  $associationNames
+     * @param array    $objects
+     * @param string[] $associationNames
      */
     public function __construct(
         array $objects,

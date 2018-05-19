@@ -10,13 +10,16 @@
         }
     ],
     "require": {
+        "php": "^7.1",
         "symfony/property-access": "^3.0|^4.0"
     },
     "require-dev": {
         "doctrine/orm": "^2.4,>=2.4.5",
         "phpunit/phpunit": "^6.3",
         "friendsofphp/php-cs-fixer": "^2.7",
-        "phpmd/phpmd": "^2.6"
+        "phpmd/phpmd": "^2.6",
+        "phpstan/phpstan": "^0.9.2",
+        "symfony/var-dumper": "^4.0"
     },
     "suggest": {
         "doctrine/orm": "^2.4,>=2.4.5",

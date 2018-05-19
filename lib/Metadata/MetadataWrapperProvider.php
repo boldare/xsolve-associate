@@ -83,19 +83,30 @@ class MetadataWrapperProvider
     public function getClassMetadataWrapperByClassName(string $className)
     {
         if (!array_key_exists($className, $this->classMetadataWrappers)) {
-            $classMetadata = $this->entityManager->getClassMetadata($className);
-
-            if ($classMetadata instanceof ClassMetadata) {
-                $entityRepository = $this->entityManager->getRepository($className);
-                if (!$entityRepository instanceof EntityRepository) {
-                    throw new \Exception();
-                }
-                $this->classMetadataWrappers[$className] = new ClassMetadataWrapper($this, $entityRepository, $classMetadata);
-            } else {
-                $this->classMetadataWrappers[$className] = null;
-            }
+            $this->initializeClassMetadataWrapperByClassName($className);
         }
 
         return $this->classMetadataWrappers[$className];
+    }
+
+    /**
+     * @param string $className
+     *
+     * @throws \Exception
+     */
+    protected function initializeClassMetadataWrapperByClassName(string $className): void
+    {
+        $classMetadata = $this->entityManager->getClassMetadata($className);
+        if (!$classMetadata instanceof ClassMetadata) {
+            $this->classMetadataWrappers[$className] = null;
+
+            return;
+        }
+
+        $entityRepository = $this->entityManager->getRepository($className);
+        if (!$entityRepository instanceof EntityRepository) {
+            throw new \Exception();
+        }
+        $this->classMetadataWrappers[$className] = new ClassMetadataWrapper($this, $entityRepository, $classMetadata);
     }
 }

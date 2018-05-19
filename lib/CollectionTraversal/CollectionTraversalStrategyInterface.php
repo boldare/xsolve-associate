@@ -15,7 +15,7 @@ interface CollectionTraversalStrategyInterface
 
     /**
      * @param ObjectCollectionInterface $objectCollection
-     * @param mixed $propertyValue
+     * @param mixed                     $propertyValue
      */
     public function traverse(ObjectCollectionInterface $objectCollection, $propertyValue);
 }

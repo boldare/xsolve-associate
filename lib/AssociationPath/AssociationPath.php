@@ -113,7 +113,7 @@ class AssociationPath
                 return $comparison;
             }
 
-            $i += 1;
+            ++$i;
         }
 
         throw new \Exception();
