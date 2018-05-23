@@ -1,0 +1,220 @@
+categories:
+  -
+    id: c1
+    name: 'Category 1'
+  -
+    id: c2
+    name: 'Category 2'
+  -
+    id: c3
+    name: 'Category 3'
+
+users:
+  -
+    id: u1
+    stores:
+      -
+        id: s1
+        approved: false
+        products:
+          -
+            id: s1p1
+            approved: false
+            name: Lorem
+            categoryId: c1
+            variants:
+              -
+                id: s1p1v1
+                price: 999
+              -
+                id: s1p1v2
+                price: 120
+              -
+                id: s1p1v3
+                price: 121
+              -
+                id: s1p1v4
+                price: 160
+          -
+            id: s1p2
+            approved: true
+            name: Ipsum
+            categoryId: c2
+            variants:
+              -
+                id: s1p2v1
+                price: 100
+              -
+                id: s1p2v2
+                price: 220
+              -
+                id: s1p2v3
+                price: 300
+              -
+                id: s1p2v4
+                price: 500
+          -
+            id: s1p3
+            approved: true
+            name: Ipsum
+            categoryId: c1
+            variants:
+              -
+                id: s1p3v1
+                price: 10
+              -
+                id: s1p3v2
+                price: 500
+      -
+        id: s2
+        approved: false
+        products:
+          -
+            id: s2p1
+            approved: true
+            name: Sit
+            categoryId: c3
+            variants:
+              -
+                id: s2p1v1
+                price: 600
+              -
+                id: s2p1v2
+                price: 520
+              -
+                id: s2p1v3
+                price: 321
+              -
+                id: s2p1v4
+                price: 460
+          -
+            id: s2p2
+            approved: false
+            name: Amet
+            categoryId: c2
+            variants:
+              -
+                id: s2p2v1
+                price: 500
+              -
+                id: s2p2v2
+                price: 300
+              -
+                id: s2p2v3
+                price: 200
+              -
+                id: s2p2v4
+                price: 100
+          -
+            id: s2p3
+            approved: true
+            name: Nullam
+            categoryId: c1
+            variants:
+              -
+                id: s2p3v1
+                price: 10
+  -
+    id: u2
+    stores:
+      -
+        id: s3
+        approved: true
+        products:
+          -
+            id: s3p1
+            approved: false
+            name: Ipsum
+            categoryId: c2
+            variants:
+              -
+                id: s3p1v1
+                price: 100
+              -
+                id: s3p1v2
+                price: 120
+              -
+                id: s3p1v3
+                price: 121
+              -
+                id: s3p1v4
+                price: 160
+          -
+            id: s3p2
+            approved: true
+            name: Lorem
+            categoryId: c2
+            variants:
+              -
+                id: s3p2v1
+                price: 100
+              -
+                id: s3p2v2
+                price: 220
+              -
+                id: s3p2v3
+                price: 300
+              -
+                id: s3p2v4
+                price: 500
+          -
+            id: s3p3
+            approved: true
+            name: Qui
+            categoryId: c1
+            variants:
+              -
+                id: s3p3v1
+                price: 10
+              -
+                id: s3p3v2
+                price: 500
+      -
+        id: s4
+        approved: true
+        products:
+          -
+            id: s4p1
+            approved: true
+            name: Vestibulum
+            categoryId: c3
+            variants:
+              -
+                id: s4p1v1
+                price: 600
+              -
+                id: s4p1v2
+                price: 520
+              -
+                id: s4p1v3
+                price: 321
+              -
+                id: s4p1v4
+                price: 460
+          -
+            id: s4p2
+            approved: true
+            name: Amet
+            categoryId: c2
+            variants:
+              -
+                id: s4p2v1
+                price: 500
+              -
+                id: s4p2v2
+                price: 300
+              -
+                id: s4p2v3
+                price: 200
+              -
+                id: s4p2v4
+                price: 100
+          -
+            id: s4p3
+            approved: false
+            name: Nullam
+            categoryId: c3
+            variants:
+              -
+                id: s4p3v1
+                price: 10
