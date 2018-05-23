@@ -5,19 +5,23 @@ namespace Xsolve\Associate\DoctrineOrm\Association\Path;
 class AssociationPath
 {
     /**
-     * @var array
+     * @var Association[]
      */
     protected $associations = [];
 
     /**
      * @param Association $association
-     *
-     * @return self
      */
-    public function addAssociation(Association $association): self
+    public function addAssociation(Association $association): void
     {
         $this->associations[] = $association;
+    }
 
-        return $this;
+    /**
+     * @return Association[]
+     */
+    public function getAssociations(): array
+    {
+        return $this->associations;
     }
 }

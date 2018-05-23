@@ -4,6 +4,10 @@ namespace Xsolve\Associate\DoctrineOrm\Association\Path;
 
 class Association
 {
+    const LOAD_MODE_NONE = 'none';
+    const LOAD_MODE_PROXY = 'proxy';
+    const LOAD_MODE_FULL = 'full';
+
     /**
      * @var string
      */
@@ -74,7 +78,7 @@ class Association
      */
     public function isLoadModeFull(): bool
     {
-        return 'full' === $this->loadMode;
+        return self::LOAD_MODE_FULL === $this->loadMode;
     }
 
     /**
@@ -82,7 +86,7 @@ class Association
      */
     public function isLoadModeProxy(): bool
     {
-        return 'proxy' === $this->loadMode;
+        return self::LOAD_MODE_PROXY === $this->loadMode;
     }
 
     /**
@@ -90,6 +94,6 @@ class Association
      */
     public function isLoadModeNone(): bool
     {
-        return 'none' === $this->loadMode;
+        return self::LOAD_MODE_NONE === $this->loadMode;
     }
 }

@@ -60,3 +60,37 @@ $associateDoctrineOrmFetcher->fetch(
         ['qux'],
     ]
 );
+
+
+// .foo.bar
+//     .baz.qux
+// .qux
+//
+$doctrineOrmAssociationPathBuilder
+    ->diverge()
+        ->associate('foo')
+        ->diverge()
+            ->associate('bar')
+        ->endDiverge()
+        ->diverge()
+            ->associate('baz')
+            ->associate('qux')
+        ->endDiverge()
+    ->endDiverge()
+    ->diverge()
+        ->associate('qux')
+    ->endDiverge();
+
+// .foo.bar.baz.qux
+//         .qux
+//
+$doctrineOrmAssociationPathBuilder
+    ->associate('foo')
+    ->associate('bar')
+    ->diverge()
+        ->associate('baz')
+        ->associate('qux')
+    ->endDiverge()
+    ->diverge()
+        ->associate('qux')
+    ->endDiverge();

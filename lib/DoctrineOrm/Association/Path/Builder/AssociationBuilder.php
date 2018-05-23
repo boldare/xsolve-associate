@@ -2,31 +2,29 @@
 
 namespace Xsolve\Associate\DoctrineOrm\Association\Path\Builder;
 
-use Xsolve\Associate\DoctrineOrm\Association\Path\AssociationPath;
+use Xsolve\Associate\DoctrineOrm\Association\Path\Association;
+use Xsolve\Associate\DoctrineOrm\Association\Path\DivergingAssociationPath;
 
 class AssociationBuilder
 {
     /**
-     * @var AssociationPathBuilder
+     * @var Association
      */
-    protected $rootBuilder;
+    protected $association;
 
     /**
-     * @var string
+     * @var DivergingAssociationPathBuilder
      */
-    protected $loadMode = 'none';
+    protected $parentBuilder;
 
     /**
-     * @var ?string
+     * @param Association                     $association
+     * @param DivergingAssociationPathBuilder $parentBuilder
      */
-    protected $alias;
-
-    /**
-     * @param AssociationPathBuilder $rootBuilder
-     */
-    public function __construct(AssociationPathBuilder $rootBuilder)
+    public function __construct(Association $association, DivergingAssociationPathBuilder $parentBuilder)
     {
-        $this->rootBuilder = $rootBuilder;
+        $this->association = $association;
+        $this->parentBuilder = $parentBuilder;
     }
 
     /**
@@ -36,7 +34,7 @@ class AssociationBuilder
      */
     public function aliasAs(string $alias): self
     {
-        $this->alias = $alias;
+        $this->association->setAlias($alias);
 
         return $this;
     }
@@ -46,7 +44,7 @@ class AssociationBuilder
      */
     public function loadFull(): self
     {
-        $this->loadMode = 'full';
+        $this->association->setLoadMode(Association::LOAD_MODE_FULL);
 
         return $this;
     }
@@ -56,7 +54,17 @@ class AssociationBuilder
      */
     public function loadProxy(): self
     {
-        $this->loadMode = 'proxy';
+        $this->association->setLoadMode(Association::LOAD_MODE_PROXY);
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function loadNone(): self
+    {
+        $this->association->setLoadMode(Association::LOAD_MODE_NONE);
 
         return $this;
     }
@@ -65,37 +73,37 @@ class AssociationBuilder
      * @param string $relationshipName
      *
      * @return self
+     *
+     * @throws \Exception
      */
     public function associate(string $relationshipName): self
     {
-        return $this->rootBuilder->associate($relationshipName);
+        return $this->parentBuilder->associate($relationshipName);
     }
 
     /**
-     * @return AssociationPath
+     * @return DivergingAssociationPathBuilder
      */
-    public function create(): AssociationPath
+    public function diverge(): DivergingAssociationPathBuilder
     {
-        return $this->rootBuilder->create();
+        return $this->parentBuilder->diverge();
     }
 
     /**
-     * TODO Should it be moved somewhere else?
+     * @return DivergingAssociationPathBuilder
      *
-     * @return string
+     * @throws \Exception
      */
-    public function getLoadMode(): string
+    public function endDiverge(): DivergingAssociationPathBuilder
     {
-        return $this->loadMode;
+        return $this->parentBuilder->endDiverge();
     }
 
     /**
-     * TODO Should it be moved somewhere else?
-     *
-     * @return string|null
+     * @return DivergingAssociationPath
      */
-    public function getAlias(): ?string
+    public function create(): DivergingAssociationPath
     {
-        return $this->alias;
+        return $this->parentBuilder->create();
     }
 }

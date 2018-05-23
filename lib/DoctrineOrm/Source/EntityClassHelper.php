@@ -31,7 +31,7 @@ class EntityClassHelper
             return;
         }
 
-        $entityClassName = $this->metadataAdapterProvider->getEntityClassForEntities($entitySource->getEntities());
+        $entityClassName = $this->metadataAdapterProvider->getClassNameForEntities($entitySource->getEntities());
         $entitySource->setEntityClass($entityClassName);
 
         $classMetadataAdapter = $this->metadataAdapterProvider->getClassMetadataAdapterByClassName($entityClassName);

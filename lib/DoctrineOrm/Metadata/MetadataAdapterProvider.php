@@ -26,23 +26,23 @@ class MetadataAdapterProvider
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @param array $objects
-     *
-     * @return ClassMetadataAdapter
-     *
-     * @throws \Exception
-     */
-    public function getClassMetadataAdapterForEntities(array $objects): ClassMetadataAdapter
-    {
-        $className = $this->getEntityClassForEntities($objects);
-        $classMetadataAdapter = $this->getClassMetadataAdapterByClassName($className);
-        if (!$classMetadataAdapter instanceof ClassMetadataAdapter) {
-            throw new \Exception();
-        }
-
-        return $classMetadataAdapter;
-    }
+//    /**
+//     * @param array $objects
+//     *
+//     * @return ClassMetadataAdapter
+//     *
+//     * @throws \Exception
+//     */
+//    public function getClassMetadataAdapterForEntities(array $objects): ClassMetadataAdapter
+//    {
+//        $className = $this->getClassNameForEntities($objects);
+//        $classMetadataAdapter = $this->getClassMetadataAdapterByClassName($className);
+//        if (!$classMetadataAdapter instanceof ClassMetadataAdapter) {
+//            throw new \Exception();
+//        }
+//
+//        return $classMetadataAdapter;
+//    }
 
     /**
      * @param array $objects
@@ -51,7 +51,7 @@ class MetadataAdapterProvider
      *
      * @throws \Exception
      */
-    public function getEntityClassForEntities(array $objects): string
+    public function getClassNameForEntities(array $objects): string
     {
         if (!$objects) {
             throw new \Exception();

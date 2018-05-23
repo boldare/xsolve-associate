@@ -1,14 +1,11 @@
 #!/usr/bin/php
 <?php
 
-use Xsolve\Associate\DoctrineOrm\Association\Path\Builder\AssociationPathBuilder;
+use Xsolve\Associate\DoctrineOrm\Association\Path\Builder\DivergingAssociationPathBuilder;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-// TODO Prepare sample data (can be random at this stage).
-// TODO Make some legacyTests out of this.
-
-$doctrineOrmAssociationPathBuilder = new AssociationPathBuilder();
+$doctrineOrmAssociationPathBuilder = new DivergingAssociationPathBuilder();
 
 $doctrineOrmAssociationPath = $doctrineOrmAssociationPathBuilder
     ->associate('bar')
@@ -22,13 +19,57 @@ $doctrineOrmAssociationPath = $doctrineOrmAssociationPathBuilder
 
 dump($doctrineOrmAssociationPath);
 
-$doctrineOrmAssociationPathBuilder = new AssociationPathBuilder();
+$doctrineOrmAssociationPathBuilder = new DivergingAssociationPathBuilder();
 
 $doctrineOrmAssociationPath = $doctrineOrmAssociationPathBuilder
     ->associate('bar')
     ->associate('baz')
     ->associate('qux')
-    ->loadFull()
+        ->loadFull()
     ->create();
+
+dump($doctrineOrmAssociationPath);
+
+// .foo.bar
+//     .baz.qux
+// .qux
+//
+$doctrineOrmAssociationPathBuilder = new DivergingAssociationPathBuilder();
+
+$doctrineOrmAssociationPath = $doctrineOrmAssociationPathBuilder
+    ->diverge()
+        ->associate('foo')
+        ->diverge()
+            ->associate('bar')
+        ->endDiverge()
+        ->diverge()
+            ->associate('baz')
+                ->aliasAs('.foo.baz')
+                ->loadProxy()
+            ->associate('qux')
+        ->endDiverge()
+    ->endDiverge()
+    ->diverge()
+        ->associate('qux')
+    ->endDiverge()
+    ->create();
+
+dump($doctrineOrmAssociationPath);
+
+// .foo.bar.baz.qux
+//         .qux
+//
+$doctrineOrmAssociationPathBuilder = new DivergingAssociationPathBuilder();
+
+$doctrineOrmAssociationPath = $doctrineOrmAssociationPathBuilder
+    ->associate('foo')
+    ->associate('bar')
+    ->diverge()
+        ->associate('baz')
+        ->associate('qux')
+    ->endDiverge()
+    ->diverge()
+        ->associate('qux')
+    ->endDiverge();
 
 dump($doctrineOrmAssociationPath);
