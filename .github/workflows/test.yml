@@ -27,8 +27,9 @@ jobs:
         run: |
           cp phpunit.xml.dist phpunit.xml
           composer install
+          composer update --prefer-lowest
           composer require --dev phpstan/phpstan
       - name: Run tests and analytics
         run: |
           vendor/phpunit/phpunit/phpunit -c phpunit.xml tests/
-          vendor/bin/phpstan analyse -l 7 lib/
+          vendor/bin/phpstan analyse -l 1 lib/
